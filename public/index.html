@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analista IA de Fútbol</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .upload-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    #mensaje-excel {
+      position: absolute;
+      left: -200px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgb(68, 74, 88);
+      font-size: 13px;
+      font-weight: bold;
+      display: none;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="logo.png" alt="Logo de VAXN" class="logo">
+  </div>
+
+  <h2>¿Qué perfil de jugador buscas?</h2>
+
+  <form id="formulario" enctype="multipart/form-data">
+    <div class="input-contenedor">
+
+      <!-- Contenedor mensaje + icono -->
+      <div class="upload-wrapper">
+        <!-- Mensaje flotante -->
+        <div id="mensaje-excel">Métricas adjuntadas con éxito</div>
+
+        <!-- Imagen para subir archivo -->
+        <label for="archivo" class="upload-icon">
+          <img src="upload-icon.png" alt="Subir archivo Excel" class="icono-upload">
+        </label>
+      </div>
+
+      <!-- Input oculto -->
+      <input type="file" id="archivo" name="archivo" required style="display: none;">
+
+      <!-- Input texto -->
+      <input type="text" name="texto" id="texto" placeholder="Escribe tu pregunta..." required class="input-pregunta">
+
+      <!-- Botón enviar como imagen -->
+      <img src="uploaded-icon2.png" alt="Enviar" id="botonEnviar" class="icono-enviar">
+    </div>
+  </form>
+
+  <div id="respuesta" style="margin-top:30px; font-weight:bold;"></div>
+
+  <script>
+    document.getElementById('archivo').addEventListener('change', () => {
+      const mensaje = document.getElementById('mensaje-excel');
+      if (mensaje) mensaje.style.display = 'block';
+    });
+
+    document.getElementById('botonEnviar').addEventListener('click', async () => {
+      const form = document.getElementById('formulario');
+      const formData = new FormData(form);
+
+      const res = await fetch('/preguntar', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await res.json();
+      document.getElementById('respuesta').innerText = data.respuesta || data.error || 'Sin respuesta';
+    });
+  </script>
+</body>
+</html>
